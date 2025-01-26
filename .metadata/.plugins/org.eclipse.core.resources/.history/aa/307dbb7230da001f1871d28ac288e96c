@@ -1,0 +1,83 @@
+package com.example.demo.Controller;
+
+import com.example.demo.entity.User;
+import com.example.demo.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+
+    @Autowired
+    private UserService userService;
+
+    @PostMapping("createUser")
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        User createdUser = userService.createUser(user);
+        return ResponseEntity.ok(createdUser);
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<User> getUserById(@PathVariable long userId) {
+        try {
+            User user = userService.getUserById(userId);
+            return ResponseEntity.ok(user);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.notFound().build();  // Return 404 if user is not found
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
+    }
+
+//    @PutMapping("/{userId}")
+//    public ResponseEntity<User> updateUser(@PathVariable long userId, @RequestBody User user) {
+//        user.setUserId(userId);
+//        User updatedUser = userService.updateUser(user);
+//        return ResponseEntity.ok(updatedUser);
+//    }
+    
+    @PutMapping("/{userId}")
+    public ResponseEntity<String> updateUser(@PathVariable Long userId, @RequestBody User user) {
+        // Set the userId to the passed user object (if necessary)
+        user.setUserId(userId);
+
+        // Attempt to update the user
+        User updatedUser = userService.updateUser(user);
+
+        // Check if the user was successfully updated
+        if (updatedUser != null) {
+            // Success message with the updated user details
+            String successMessage = "User with ID " + userId + " has been updated successfully.";
+
+            // Return the success message with a 200 OK status
+            return ResponseEntity.status(HttpStatus.OK).body(successMessage);
+        } else {
+            // If the user is not found, return an error message
+            String errorMessage = "User with ID " + userId + " not found.";
+
+            // Return the error message with a 404 Not Found status
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+        }
+    }
+
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<String> deleteUser(@PathVariable long userId) {
+        userService.deleteUser(userId);
+        // Create the success message
+        String successMessage = "User with ID " + userId + " has been deleted successfully.";
+
+        // Return 200 OK status with the success message in the response body
+        return ResponseEntity.status(HttpStatus.OK).body(successMessage);
+    }
+}
+

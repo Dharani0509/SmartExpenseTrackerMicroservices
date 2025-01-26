@@ -1,0 +1,28 @@
+server.port = 8084
+
+spring.datasource.username=postgres
+spring.datasource.password=pgadmin
+spring.datasource.url=jdbc:postgresql://localhost:5432/postgres
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
+#spring.jpa.hibernate.ddl-auto=create
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+logging.file.name = gtestLogs.log
+# Logging pattern for the console
+logging.pattern.console=%d [%level] %c{1.} [%t] %m%n
+# Logging pattern for file
+logging.pattern.file= %d [%level] %c{1.} [%t] %m%n
+
+#spring.application.name=Admin
+#spring.application.name=User
+
+#management.endpoints.web.exposure.include=*
+
+spring.application.name=Budget
+
+eureka.client.service-url.defaultZone=http://localhost:8761/eureka/
+eureka.client.register-with-eureka=true
+eureka.client.fetch-registry=true
+
